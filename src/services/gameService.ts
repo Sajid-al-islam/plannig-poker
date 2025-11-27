@@ -18,7 +18,8 @@ import { getAvatarColor } from '../types';
  * Create a new game session
  */
 export const createGameSession = async (
-    hostName: string
+    hostName: string,
+    isSpectator: boolean = false
 ): Promise<{ gameId: string; participantId: string }> => {
     const gameId = generateGameId();
     const participantId = generateParticipantId();
@@ -43,6 +44,7 @@ export const createGameSession = async (
         color: getAvatarColor(0),
         joinedAt: now,
         isHost: true,
+        isSpectator,
     };
 
     // Save to Firestore
@@ -60,7 +62,8 @@ export const createGameSession = async (
  */
 export const joinGameSession = async (
     gameId: string,
-    participantName: string
+    participantName: string,
+    isSpectator: boolean = false
 ): Promise<{ participantId: string; success: boolean; error?: string }> => {
     try {
         // Check if game exists
@@ -87,6 +90,7 @@ export const joinGameSession = async (
             color: getAvatarColor(participantCount),
             joinedAt: Date.now(),
             isHost: false,
+            isSpectator,
         };
 
         await setDoc(

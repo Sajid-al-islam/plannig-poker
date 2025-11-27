@@ -16,6 +16,7 @@ export interface Participant {
     color: string;
     joinedAt: number;
     isHost: boolean;
+    isSpectator?: boolean;
 }
 
 export interface Vote {
@@ -43,9 +44,9 @@ export interface EmojiThrow {
 }
 
 // Voting card values
-export type VoteValue = '0' | '1' | '2' | '3' | '5' | '8' | '13' | '21' |'34' | '?' | '☕';
+export type VoteValue = '0' | '1' | '2' | '3' | '5' | '8' | '13' | '21' | '34' | '?' | '☕';
 
-export const VOTE_VALUES: VoteValue[] = ['0', '1', '2', '3', '5', '8', '13', '21', '34' ,'?', '☕'];
+export const VOTE_VALUES: VoteValue[] = ['0', '1', '2', '3', '5', '8', '13', '21', '34', '?', '☕'];
 
 // Color palette for participant avatars
 export const PARTICIPANT_COLORS = [

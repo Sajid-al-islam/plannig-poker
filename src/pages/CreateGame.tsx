@@ -15,6 +15,7 @@ export const CreateGame: React.FC = () => {
     const [error, setError] = useState('');
     const [mode, setMode] = useState<'create' | 'join' | null>(null);
     const [gameId, setGameId] = useState('');
+    const [isSpectator, setIsSpectator] = useState(false);
 
     // Auto-populate gameId if coming from a direct link
     useEffect(() => {
@@ -34,7 +35,7 @@ export const CreateGame: React.FC = () => {
         setError('');
 
         try {
-            const { gameId, participantId } = await createGameSession(name);
+            const { gameId, participantId } = await createGameSession(name, isSpectator);
             // Store in localStorage
             localStorage.setItem('currentGameId', gameId);
             localStorage.setItem('currentParticipantId', participantId);
@@ -62,7 +63,7 @@ export const CreateGame: React.FC = () => {
         setError('');
 
         try {
-            const result = await joinGameSession(gameId, name);
+            const result = await joinGameSession(gameId, name, isSpectator);
             if (result.success) {
                 // Store in localStorage
                 localStorage.setItem('currentGameId', gameId);
@@ -121,6 +122,17 @@ export const CreateGame: React.FC = () => {
                                 fullWidth
                                 error={error}
                             />
+
+                            <label className="flex items-center gap-2 cursor-pointer text-gray-300 hover:text-white transition-colors">
+                                <input
+                                    type="checkbox"
+                                    checked={isSpectator}
+                                    onChange={(e) => setIsSpectator(e.target.checked)}
+                                    className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-primary-500 focus:ring-primary-500"
+                                />
+                                Join as Spectator
+                            </label>
+
                             <div className="flex gap-3">
                                 <Button
                                     fullWidth
@@ -159,6 +171,16 @@ export const CreateGame: React.FC = () => {
                                 fullWidth
                                 error={error}
                             />
+
+                            <label className="flex items-center gap-2 cursor-pointer text-gray-300 hover:text-white transition-colors">
+                                <input
+                                    type="checkbox"
+                                    checked={isSpectator}
+                                    onChange={(e) => setIsSpectator(e.target.checked)}
+                                    className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-primary-500 focus:ring-primary-500"
+                                />
+                                Join as Spectator
+                            </label>
                             <div className="flex gap-3">
                                 <Button
                                     fullWidth

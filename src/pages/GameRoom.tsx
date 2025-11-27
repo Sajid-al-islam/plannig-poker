@@ -198,7 +198,8 @@ export const GameRoom: React.FC = () => {
 
     const currentIssue = issues.find((i) => i.id === gameSession.currentIssue);
     const userHasVoted = hasVoted(votes, currentParticipantId);
-    const allVoted = participants.every((p) => hasVoted(votes, p.id));
+    const activeParticipants = participants.filter(p => !p.isSpectator);
+    const allVoted = activeParticipants.every((p) => hasVoted(votes, p.id));
 
     return (
         <div className="min-h-screen pb-20">
@@ -262,7 +263,7 @@ export const GameRoom: React.FC = () => {
                 </div>
 
                 {/* Voting Cards */}
-                {currentIssue && !gameSession.votesRevealed && (
+                {currentIssue && !gameSession.votesRevealed && !currentParticipant?.isSpectator && (
                     <VotingCards
                         selectedValue={selectedValue}
                         onSelectValue={handleVoteSelect}
@@ -280,7 +281,7 @@ export const GameRoom: React.FC = () => {
                                 size="lg"
                             >
                                 <Eye className="w-5 h-5 mr-2" />
-                                Reveal Votes {!allVoted && `(${votes.length}/${participants.length})`}
+                                Reveal Votes {!allVoted && `(${votes.length}/${activeParticipants.length})`}
                             </Button>
                         ) : (
                             <>
@@ -300,7 +301,12 @@ export const GameRoom: React.FC = () => {
                 {/* Results */}
                 {gameSession.votesRevealed && votes.length > 0 && (
                     <div className="mb-8">
-                        <ResultsChart votes={votes} />
+                        <ResultsChart
+                            votes={votes.filter(v => {
+                                const p = participants.find(p => p.id === v.participantId);
+                                return p && !p.isSpectator;
+                            })}
+                        />
                     </div>
                 )}
             </div>

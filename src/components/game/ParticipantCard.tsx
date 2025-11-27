@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Crown } from 'lucide-react';
+import { Check, Crown, Eye } from 'lucide-react';
 import { type Participant } from '../../types';
 import { getInitials } from '../../types';
 import { QuickEmojiBar } from './QuickEmojiBar';
@@ -77,6 +77,13 @@ export const ParticipantCard: React.FC<ParticipantCardProps> = ({
                         <Check className="w-3 h-3 text-white" />
                     </div>
                 )}
+
+                {/* Spectator badge */}
+                {participant.isSpectator && (
+                    <div className="absolute -bottom-1 -left-1 w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center shadow-lg" title="Spectator">
+                        <Eye className="w-3 h-3 text-white" />
+                    </div>
+                )}
             </div>
 
             {/* Name */}
@@ -99,7 +106,9 @@ export const ParticipantCard: React.FC<ParticipantCardProps> = ({
             {/* Voting status */}
             {!votesRevealed && (
                 <div className="text-xs text-center">
-                    {hasVoted ? (
+                    {participant.isSpectator ? (
+                        <span className="text-blue-400">Spectator</span>
+                    ) : hasVoted ? (
                         <span className="text-green-400">✓ Voted</span>
                     ) : (
                         <span className="text-gray-500">Waiting...</span>
