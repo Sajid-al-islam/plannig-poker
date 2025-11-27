@@ -129,8 +129,8 @@ a {
   @apply hover:scale-105;
   @apply transition-all duration-200;
   @apply flex items-center justify-center;
-  @apply text-3xl font-bold;
-  @apply w-16 h-24 rounded-lg;
+  @apply text-xl font-bold;
+  @apply w-14 h-20 rounded-lg;
 }
 
 .voting-card:hover {
@@ -145,15 +145,17 @@ a {
 
 .voting-card.disabled {
   @apply opacity-50 cursor-not-allowed;
-  @apply hover:scale-100;
+  @apply hover:scale-100 hover:shadow-none;
+  @apply border-gray-600 text-gray-600;
 }
 
 /* Participant card */
 .participant-card {
-  @apply glass p-4 rounded-xl;
-  @apply flex flex-col items-center gap-3;
+  @apply glass p-3 rounded-xl;
+  @apply flex flex-col items-center gap-2;
   @apply hover:scale-105 transition-transform;
   @apply cursor-pointer;
+  @apply relative;
 }
 
 .participant-card.voted {

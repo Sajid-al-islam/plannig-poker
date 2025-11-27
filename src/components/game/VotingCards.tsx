@@ -13,9 +13,9 @@ export const VotingCards: React.FC<VotingCardsProps> = ({
     disabled,
 }) => {
     return (
-        <div className="py-8">
-            <h3 className="text-xl font-semibold mb-4 text-center">Select Your Estimate</h3>
-            <div className="flex flex-wrap justify-center gap-4 mx-auto">
+        <div className="py-6">
+            <h3 className="text-base font-semibold mb-3 text-center text-gray-400 uppercase tracking-wide">Select Your Estimate</h3>
+            <div className="flex flex-wrap justify-center gap-3 mx-auto">
                 {VOTE_VALUES.map((value) => (
                     <button
                         key={value}

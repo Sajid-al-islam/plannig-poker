@@ -18,6 +18,7 @@ import {
 } from '../services/gameService';
 import { submitVote, listenToVotes, hasVoted, getParticipantVote } from '../services/voteService';
 import { throwEmoji, listenToEmojis } from '../services/emojiService';
+import { updateRecentEmojis } from '../components/game/QuickEmojiBar';
 import {
     addIssue,
     listenToIssues,
@@ -42,6 +43,7 @@ export const GameRoom: React.FC = () => {
     const [selectedValue, setSelectedValue] = useState<string | null>(null);
     const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
     const [copied, setCopied] = useState(false);
+    const [hoveredParticipantId, setHoveredParticipantId] = useState<string | null>(null);
 
     const currentParticipant = participants.find((p) => p.id === currentParticipantId);
     const isHost = currentParticipant?.isHost || false;
@@ -131,7 +133,7 @@ export const GameRoom: React.FC = () => {
         setSelectedValue(null);
     };
 
-    // Handle emoji throw
+    // Handle emoji throw (from full picker)
     const handleEmojiThrow = async (emoji: string) => {
         if (!gameId || !currentParticipantId || !selectedParticipant) return;
 
@@ -143,7 +145,28 @@ export const GameRoom: React.FC = () => {
             // Silently fail - rate limiting is normal behavior
         } else {
             console.log('Emoji thrown successfully:', emoji);
+            // Update recent emojis
+            updateRecentEmojis(emoji);
         }
+    };
+
+    // Handle quick emoji click (from hover bar)
+    const handleQuickEmojiClick = (participantId: string) => (emoji: string) => {
+        if (!gameId || !currentParticipantId) return;
+
+        throwEmoji(gameId, currentParticipantId, participantId, emoji).then(result => {
+            if (result.success) {
+                // Update recent emojis
+                updateRecentEmojis(emoji);
+            } else {
+                console.warn('Rate limited:', result.error);
+            }
+        });
+    };
+
+    // Handle show full picker (from "+" button)
+    const handleShowFullPicker = (participant: Participant) => () => {
+        setSelectedParticipant(participant);
     };
 
     // Handle copy game link
@@ -227,6 +250,11 @@ export const GameRoom: React.FC = () => {
                                     onClick={() =>
                                         participant.id !== currentParticipantId && setSelectedParticipant(participant)
                                     }
+                                    onEmojiClick={participant.id !== currentParticipantId ? handleQuickEmojiClick(participant.id) : undefined}
+                                    onShowFullPicker={participant.id !== currentParticipantId ? handleShowFullPicker(participant) : undefined}
+                                    showQuickBar={hoveredParticipantId === participant.id}
+                                    onMouseEnter={() => participant.id !== currentParticipantId && setHoveredParticipantId(participant.id)}
+                                    onMouseLeave={() => setHoveredParticipantId(null)}
                                 />
                             </div>
                         ))}

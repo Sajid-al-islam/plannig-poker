@@ -6,7 +6,7 @@ export const RATE_LIMITS = {
     EMOJI_THROW_COOLDOWN: 500, // 0.5 second
 
     // Maximum emojis per participant per minute
-    MAX_EMOJIS_PER_MINUTE: 10,
+    MAX_EMOJIS_PER_MINUTE: 1000,
 
     // Vote update debounce (milliseconds to wait before sending vote update)
     VOTE_UPDATE_DEBOUNCE: 500, // 0.5 seconds
@@ -15,10 +15,10 @@ export const RATE_LIMITS = {
     LISTENER_THROTTLE: 100, // 0.1 seconds
 
     // Maximum participants per game session
-    MAX_PARTICIPANTS: 20,
+    MAX_PARTICIPANTS: 1000,
 
     // Maximum issues per game session
-    MAX_ISSUES: 50,
+    MAX_ISSUES: 100,
 };
 
 // Rate limit tracking
