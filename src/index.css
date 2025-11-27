@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  min-height: 100vh;
+  color: #f1f5f9;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.3s ease;
+}
+
+button,
+a {
+  transition: all 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Button styles */
+.btn {
+  @apply px-6 py-3 rounded-lg font-semibold transition-all duration-200;
+  @apply shadow-lg hover:shadow-xl hover:scale-105;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-primary-500 to-primary-600;
+  @apply hover:from-primary-600 hover:to-primary-700;
+  @apply text-white focus:ring-primary-500;
+}
+
+.btn-secondary {
+  @apply bg-gradient-to-r from-secondary-500 to-secondary-600;
+  @apply hover:from-secondary-600 hover:to-secondary-700;
+  @apply text-white focus:ring-secondary-500;
+}
+
+.btn-outline {
+  @apply border-2 border-primary-500 text-primary-400;
+  @apply hover:bg-primary-500 hover:text-white;
+}
+
+/* Card styles */
+.card {
+  @apply glass p-6 hover:shadow-2xl;
+}
+
+/* Input styles */
+.input {
+  @apply glass px-4 py-3 rounded-lg;
+  @apply border border-white/10 focus:border-primary-500;
+  @apply bg-white/5 text-white placeholder-gray-400;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500/50;
+}
+
+/* Voting card styles */
+.voting-card {
+  @apply bg-transparent cursor-pointer select-none;
+  @apply border-2 border-primary-400 text-primary-400;
+  @apply hover:scale-105;
+  @apply transition-all duration-200;
+  @apply flex items-center justify-center;
+  @apply text-3xl font-bold;
+  @apply w-16 h-24 rounded-lg;
+}
+
+.voting-card:hover {
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+}
+
+.voting-card.selected {
+  @apply bg-primary-500 text-white border-primary-500;
+  @apply -translate-y-2;
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.6);
+}
+
+.voting-card.disabled {
+  @apply opacity-50 cursor-not-allowed;
+  @apply hover:scale-100;
+}
+
+/* Participant card */
+.participant-card {
+  @apply glass p-4 rounded-xl;
+  @apply flex flex-col items-center gap-3;
+  @apply hover:scale-105 transition-transform;
+  @apply cursor-pointer;
+}
+
+.participant-card.voted {
+  @apply border-2 border-green-500/50;
+}
+
+/* Emoji animation container */
+.emoji-container {
+  @apply fixed inset-0 pointer-events-none z-50;
+}
+
+.emoji-flying {
+  @apply text-6xl absolute;
+  animation: emojifly 2s ease-out forwards;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  @apply inline-block w-8 h-8 border-4 border-white/20 border-t-primary-500 rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+/* Glow effect */
+.glow {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.5),
+    0 0 40px rgba(14, 165, 233, 0.3),
+    0 0 60px rgba(14, 165, 233, 0.1);
+}
+
+/* Hero background animation */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg,
+      #667eea,
+      #764ba2,
+      #f093fb,
+      #4facfe);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
