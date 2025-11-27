@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Modal } from '../components/common/Modal';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+// import { Modal } from '../components/common/Modal';
 import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { createGameSession, joinGameSession } from '../services/gameService';
 
 export const CreateGame: React.FC = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const urlGameId = searchParams.get('gameId');
+
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [mode, setMode] = useState<'create' | 'join' | null>(null);
     const [gameId, setGameId] = useState('');
+
+    // Auto-populate gameId if coming from a direct link
+    useEffect(() => {
+        if (urlGameId) {
+            setGameId(urlGameId);
+            setMode('join');
+        }
+    }, [urlGameId]);
 
     const handleCreateGame = async () => {
         if (!name.trim()) {

@@ -53,7 +53,8 @@ export const GameRoom: React.FC = () => {
         // Get participant ID from localStorage
         const storedParticipantId = localStorage.getItem('currentParticipantId');
         if (!storedParticipantId) {
-            navigate('/create');
+            // Redirect to create/join page with gameId as query param
+            navigate(`/create?gameId=${gameId}`);
             return;
         }
         setCurrentParticipantId(storedParticipantId);
@@ -73,6 +74,24 @@ export const GameRoom: React.FC = () => {
             unsubEmojis();
         };
     }, [gameId, navigate]);
+
+    // Auto-select issue logic
+    useEffect(() => {
+        if (!gameId || !gameSession || !isHost) return;
+
+        const unestimatedIssues = issues.filter(issue => !issue.isEstimated);
+
+        // If there's exactly one unestimated issue and no current issue selected, auto-select it
+        if (unestimatedIssues.length === 1 && !gameSession.currentIssue) {
+            setCurrentIssue(gameId, unestimatedIssues[0].id);
+        }
+        // If a new issue was just added (length increased), auto-select the newest one
+        else if (unestimatedIssues.length > 0 && !gameSession.currentIssue) {
+            // Get the most recently added issue (last in array)
+            const newestIssue = unestimatedIssues[unestimatedIssues.length - 1];
+            setCurrentIssue(gameId, newestIssue.id);
+        }
+    }, [gameId, gameSession, issues, isHost]);
 
     // Handle vote selection
     const handleVoteSelect = (value: VoteValue) => {

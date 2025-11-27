@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, Check, ChevronRight, ChevronLeft, Trash2, Upload, Download } from 'lucide-react';
+import { Plus, Check, ChevronRight, ChevronLeft, Trash2, Download } from 'lucide-react';
 import { type Issue } from '../../types';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -21,9 +21,7 @@ export const IssueSidebar: React.FC<IssueSidebarProps> = ({
     currentIssueId,
     onAddIssue,
     onSelectIssue,
-    onMarkEstimated,
     onDeleteIssue,
-    onImportCSV,
     onExportCSV,
     isHost,
 }) => {
@@ -41,23 +39,7 @@ export const IssueSidebar: React.FC<IssueSidebarProps> = ({
         }
     };
 
-    const handleImportClick = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.csv';
-        input.onchange = (e) => {
-            const file = (e.target as HTMLInputElement).files?.[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const text = event.target?.result as string;
-                    onImportCSV(text);
-                };
-                reader.readAsText(file);
-            }
-        };
-        input.click();
-    };
+
 
     return (
         <>
