@@ -77,6 +77,22 @@ export const GameRoom: React.FC = () => {
         };
     }, [gameId, navigate]);
 
+    // Strict participant validation
+    useEffect(() => {
+        // Only run validation if we have participants loaded and a currentParticipantId
+        if (participants.length > 0 && currentParticipantId) {
+            const participantExists = participants.some(p => p.id === currentParticipantId);
+
+            if (!participantExists) {
+                console.warn('Participant not found in session, redirecting to join');
+                localStorage.removeItem('currentParticipantId');
+                // Keep gameId in localStorage so join page knows which game
+                localStorage.setItem('currentGameId', gameId || '');
+                navigate(`/create?gameId=${gameId}`);
+            }
+        }
+    }, [participants, currentParticipantId, gameId, navigate]);
+
     // Auto-select issue logic
     useEffect(() => {
         if (!gameId || !gameSession || !isHost) return;

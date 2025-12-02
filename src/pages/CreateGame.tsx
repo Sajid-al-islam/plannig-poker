@@ -26,6 +26,9 @@ export const CreateGame: React.FC = () => {
     }, [urlGameId]);
 
     const handleCreateGame = async () => {
+        localStorage.removeItem('currentGameId');
+        localStorage.removeItem('currentParticipantId');
+        
         if (!name.trim()) {
             setError('Please enter your name');
             return;
@@ -49,6 +52,9 @@ export const CreateGame: React.FC = () => {
     };
 
     const handleJoinGame = async () => {
+        localStorage.removeItem('currentGameId');
+        localStorage.removeItem('currentParticipantId');
+
         if (!name.trim()) {
             setError('Please enter your name');
             return;
