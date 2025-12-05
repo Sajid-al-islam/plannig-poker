@@ -202,6 +202,35 @@ export const leaveGameSession = async (
 };
 
 /**
+ * Remove a participant from the game (can be called by any player)
+ * Also removes their votes
+ */
+export const removeParticipant = async (
+    gameId: string,
+    participantId: string
+): Promise<void> => {
+    try {
+        // Remove participant
+        await deleteDoc(
+            doc(db, COLLECTIONS.GAME_SESSIONS, gameId, COLLECTIONS.PARTICIPANTS, participantId)
+        );
+
+        // Remove their votes
+        const votesRef = collection(db, COLLECTIONS.GAME_SESSIONS, gameId, COLLECTIONS.VOTES);
+        const votesSnap = await getDocs(votesRef);
+
+        const deletePromises = votesSnap.docs
+            .filter(voteDoc => voteDoc.data().participantId === participantId)
+            .map(voteDoc => deleteDoc(voteDoc.ref));
+
+        await Promise.all(deletePromises);
+    } catch (error) {
+        console.error('Error removing participant:', error);
+        throw error;
+    }
+};
+
+/**
  * Set current issue being voted on
  */
 export const setCurrentIssue = async (

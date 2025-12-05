@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Crown, Eye } from 'lucide-react';
+import { Check, Crown, Eye, X } from 'lucide-react';
 import { type Participant } from '../../types';
 import { getInitials } from '../../types';
 import { QuickEmojiBar } from './QuickEmojiBar';
@@ -15,6 +15,8 @@ interface ParticipantCardProps {
     showQuickBar?: boolean;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
+    onRemove?: () => void;
+    isCurrentUser?: boolean;
 }
 
 export const ParticipantCard: React.FC<ParticipantCardProps> = ({
@@ -28,6 +30,8 @@ export const ParticipantCard: React.FC<ParticipantCardProps> = ({
     showQuickBar = false,
     onMouseEnter,
     onMouseLeave,
+    onRemove,
+    isCurrentUser = false,
 }) => {
     const handleQuickEmojiClick = (emoji: string) => {
         if (onEmojiClick) {
@@ -46,9 +50,23 @@ export const ParticipantCard: React.FC<ParticipantCardProps> = ({
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className={`participant-card ${hasVoted ? 'voted' : ''} ${onClick ? 'cursor-pointer' : ''
+            className={`participant-card group ${hasVoted ? 'voted' : ''} ${onClick ? 'cursor-pointer' : ''
                 }`}
         >
+            {/* Remove Button */}
+            {onRemove && !isCurrentUser && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onRemove();
+                    }}
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    title="Remove participant"
+                >
+                    <X className="w-3 h-3 text-white" />
+                </button>
+            )}
+
             {/* Quick Emoji Bar */}
             {showQuickBar && onEmojiClick && (
                 <QuickEmojiBar

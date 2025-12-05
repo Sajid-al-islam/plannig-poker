@@ -15,6 +15,7 @@ import {
     revealVotes,
     resetVotingRound,
     setCurrentIssue,
+    removeParticipant,
 } from '../services/gameService';
 import { submitVote, listenToVotes, hasVoted, getParticipantVote } from '../services/voteService';
 import { throwEmoji, listenToEmojis } from '../services/emojiService';
@@ -44,6 +45,7 @@ export const GameRoom: React.FC = () => {
     const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
     const [copied, setCopied] = useState(false);
     const [hoveredParticipantId, setHoveredParticipantId] = useState<string | null>(null);
+    const [participantToRemove, setParticipantToRemove] = useState<Participant | null>(null);
 
     const currentParticipant = participants.find((p) => p.id === currentParticipantId);
     const isHost = currentParticipant?.isHost || false;
@@ -111,6 +113,13 @@ export const GameRoom: React.FC = () => {
         }
     }, [gameId, gameSession, issues, isHost]);
 
+    // Clear selected value when votes are reset (Fix for reset bug)
+    useEffect(() => {
+        if (!gameSession?.votesRevealed && votes.length === 0) {
+            setSelectedValue(null);
+        }
+    }, [gameSession?.votesRevealed, votes.length]);
+
     // Handle vote selection
     const handleVoteSelect = (value: VoteValue) => {
         if (!gameId || !currentParticipantId) return;
@@ -160,7 +169,7 @@ export const GameRoom: React.FC = () => {
             console.warn('Failed to throw emoji:', result.error);
             // Silently fail - rate limiting is normal behavior
         } else {
-            console.log('Emoji thrown successfully:', emoji);
+            // console.log('Emoji thrown successfully:', emoji);
             // Update recent emojis
             updateRecentEmojis(emoji);
         }
@@ -204,6 +213,27 @@ export const GameRoom: React.FC = () => {
         navigate('/');
     };
 
+    // Handle remove participant
+    const handleRemoveParticipant = (participant: Participant) => {
+        setParticipantToRemove(participant);
+    };
+
+    // Confirm remove participant
+    const confirmRemoveParticipant = async () => {
+        if (!gameId || !participantToRemove) return;
+
+        try {
+            await removeParticipant(gameId, participantToRemove.id);
+            setParticipantToRemove(null);
+        } catch (error) {
+            console.error('Failed to remove participant:', error);
+        }
+    };
+
+    const cancelRemoveParticipant = () => {
+        setParticipantToRemove(null);
+    };
+
     if (!gameSession || !currentParticipantId) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -215,7 +245,6 @@ export const GameRoom: React.FC = () => {
     const currentIssue = issues.find((i) => i.id === gameSession.currentIssue);
     const userHasVoted = hasVoted(votes, currentParticipantId);
     const activeParticipants = participants.filter(p => !p.isSpectator);
-    const allVoted = activeParticipants.every((p) => hasVoted(votes, p.id));
 
     return (
         <div className="min-h-screen pb-20">
@@ -272,6 +301,8 @@ export const GameRoom: React.FC = () => {
                                     showQuickBar={hoveredParticipantId === participant.id}
                                     onMouseEnter={() => participant.id !== currentParticipantId && setHoveredParticipantId(participant.id)}
                                     onMouseLeave={() => setHoveredParticipantId(null)}
+                                    onRemove={() => handleRemoveParticipant(participant)}
+                                    isCurrentUser={participant.id === currentParticipantId}
                                 />
                             </div>
                         ))}
@@ -293,11 +324,11 @@ export const GameRoom: React.FC = () => {
                         {!gameSession.votesRevealed ? (
                             <Button
                                 onClick={handleRevealVotes}
-                                disabled={!allVoted}
+                                disabled={votes.length === 0}
                                 size="lg"
                             >
                                 <Eye className="w-5 h-5 mr-2" />
-                                Reveal Votes {!allVoted && `(${votes.length}/${activeParticipants.length})`}
+                                Reveal Votes ({votes.length}/{activeParticipants.length})
                             </Button>
                         ) : (
                             <>
@@ -360,6 +391,27 @@ export const GameRoom: React.FC = () => {
 
             {/* Emoji Container */}
             <EmojiContainer emojis={emojis} participants={participants} />
+
+            {/* Remove Participant Confirmation Modal */}
+            {participantToRemove && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50" onClick={cancelRemoveParticipant}>
+                    <div className="glass-strong p-6 rounded-xl max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-xl font-bold mb-4 text-white">Remove Participant?</h3>
+                        <p className="text-gray-300 mb-6">
+                            Are you sure you want to remove <span className="font-semibold text-white">{participantToRemove.name}</span> from the game?
+                            They will be redirected to the home page.
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                            <Button variant="ghost" onClick={cancelRemoveParticipant}>
+                                Cancel
+                            </Button>
+                            <Button variant="outline" onClick={confirmRemoveParticipant} className="bg-red-500 hover:bg-red-600 border-red-500">
+                                Remove
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

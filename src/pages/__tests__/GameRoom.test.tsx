@@ -45,7 +45,7 @@ vi.mock('../../components/game/VotingCards', () => ({
     VotingCards: () => <div data-testid="voting-cards">Voting Cards</div>
 }));
 vi.mock('../../components/game/ParticipantCard', () => ({
-    ParticipantCard: ({ participant }) => <div data-testid={`participant-${participant.id}`}>{participant.name}</div>
+    ParticipantCard: ({ participant }: { participant: any }) => <div data-testid={`participant-${participant.id}`}>{participant.name}</div>
 }));
 vi.mock('../../components/game/ResultsChart', () => ({
     ResultsChart: () => <div data-testid="results-chart">Results Chart</div>
@@ -85,13 +85,13 @@ describe('GameRoom', () => {
         localStorage.setItem('currentParticipantId', participantId);
 
         // Setup: Game session exists
-        (gameService.listenToGameSession as any).mockImplementation((id, callback) => {
-            callback({ id, name: 'Test Game', currentIssue: null, votesRevealed: false, hostId: 'other-user' });
+        (gameService.listenToGameSession as any).mockImplementation((_id: any, callback: any) => {
+            callback({ id: _id, name: 'Test Game', currentIssue: null, votesRevealed: false, hostId: 'other-user' });
             return () => { };
         });
 
         // Setup: Participants list DOES NOT include the current user
-        (gameService.listenToParticipants as any).mockImplementation((id, callback) => {
+        (gameService.listenToParticipants as any).mockImplementation((_id: any, callback: any) => {
             callback([
                 { id: 'other-user', name: 'Other User', isHost: true }
             ]);
@@ -114,13 +114,13 @@ describe('GameRoom', () => {
         localStorage.setItem('currentParticipantId', participantId);
 
         // Setup: Game session exists
-        (gameService.listenToGameSession as any).mockImplementation((id, callback) => {
-            callback({ id, name: 'Test Game', currentIssue: null, votesRevealed: false, hostId: participantId });
+        (gameService.listenToGameSession as any).mockImplementation((_id: any, callback: any) => {
+            callback({ id: _id, name: 'Test Game', currentIssue: null, votesRevealed: false, hostId: participantId });
             return () => { };
         });
 
         // Setup: Participants list INCLUDES the current user
-        (gameService.listenToParticipants as any).mockImplementation((id, callback) => {
+        (gameService.listenToParticipants as any).mockImplementation((_id: any, callback: any) => {
             callback([
                 { id: participantId, name: 'Test User', isHost: true }
             ]);
