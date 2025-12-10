@@ -106,8 +106,18 @@ The built files will be in the `dist/` directory.
 4. Build and deploy:
    ```bash
    npm run build
-   firebase deploy
+
+   #deploy commands quick guide
+   firebase deploy --only hosting
+
+   Public directory: dist
+   Single-page app: Yes
+   GitHub deploys: No
+   Overwrite index.html: No
+
    ```
+
+   
 
 ## Troubleshooting
 
